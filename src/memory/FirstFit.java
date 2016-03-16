@@ -1,5 +1,8 @@
 package memory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This memory model allocates memory cells based on the first-fit method. 
  * 
@@ -8,6 +11,7 @@ package memory;
  */
 public class FirstFit extends Memory {
 
+	private HashMap<Pointer, Integer> pointerSize;
 	/**
 	 * Initializes an instance of a first fit-based memory.
 	 * 
@@ -15,7 +19,7 @@ public class FirstFit extends Memory {
 	 */
 	public FirstFit(int size) {
 		super(size);
-		// TODO Implement this!
+		pointerSize = new HashMap<>();
 	}
 
 	/**
@@ -26,10 +30,28 @@ public class FirstFit extends Memory {
 	 */
 	@Override
 	public Pointer alloc(int size) {
-		// TODO Implement this!
+		int address = 0;
+
+        for (Map.Entry<Pointer, Integer> entry: pointerSize.entrySet()) {
+            Pointer p = entry.getKey();
+            if(p.pointsAt() - address > size) {
+                return addPointer(address,size);
+            }
+            address = p.pointsAt() + entry.getValue();
+        }
+		if (cells.length  - address > size) {
+			return addPointer(address, size);
+		}
 		return null;
 	}
-	
+
+	private Pointer addPointer(int address, int size) {
+		Pointer pointer = new Pointer(this);
+		pointer.pointAt(address);
+		pointerSize.put(pointer, size);
+		return pointer;
+	}
+
 	/**
 	 * Releases a number of data cells
 	 * 
@@ -37,7 +59,7 @@ public class FirstFit extends Memory {
 	 */
 	@Override
 	public void release(Pointer p) {
-		// TODO Implement this!
+        pointerSize.remove(p);
 	}
 	
 	/**
@@ -50,9 +72,21 @@ public class FirstFit extends Memory {
 	 */
 	@Override
 	public void printLayout() {
-		// TODO Implement this!
-	}
-	
+        int counter = 0;
+
+        for (Map.Entry<Pointer, Integer> entry: pointerSize.entrySet()) {
+            Pointer p = entry.getKey();
+            if (counter < p.pointsAt()) {
+                System.out.println("" + counter + " - " + (p.pointsAt() - 1) + " Free");
+            }
+            System.out.println("" + p.pointsAt() + " - " + (p.pointsAt() + entry.getValue() - 1) + " Allocated  (pointerSize is " + entry.getValue() + ")");
+            counter = p.pointsAt() + entry.getValue();
+        }
+        if(counter < cells.length) {
+            System.out.println("" + counter + " - " + cells.length + " Free");
+        }
+    }
+
 	/**
 	 * Compacts the memory space.
 	 */
