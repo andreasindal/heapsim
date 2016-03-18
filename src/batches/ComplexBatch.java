@@ -22,9 +22,9 @@ public class ComplexBatch {
 	}
 
 	public void run() {
-		Memory m = new FirstFit(1000); // Swap this for  your own implementation
+		Memory m = new FirstFit(1000, true); // boolean for compacting(true) or not
 		Pointer[] ps = new Pointer[20];
-		
+
 		ps[0] = m.alloc(100);
 		ps[0].write(range(1, 100));
 		ps[1] = m.alloc(200);
@@ -73,7 +73,7 @@ public class ComplexBatch {
 		ps[18].write(range(1, 40));
 		ps[19] = m.alloc(5);
 		ps[19].write(range(11, 15));
-		
+
 		m.printLayout();
 		
 		// After these last releases, the memory table should be empty
