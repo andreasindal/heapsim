@@ -1,5 +1,8 @@
 package memory;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 /**
  * Memory is a slightly more advanced memory model, with support for object
  * allocation and deallocation. Basically, this is a heap in spe. Write and
@@ -9,6 +12,9 @@ package memory;
  * @since 1.0
  */
 public abstract class Memory extends RawMemory {
+
+	protected LinkedList<Pointer> pointers;
+	protected HashMap<Pointer, Integer> pointerSize;
 
 	/**
 	 * Initializes an instance of Memory.
@@ -43,4 +49,20 @@ public abstract class Memory extends RawMemory {
 	 * | 1000 - 1024 | Free
 	 */
 	public abstract void printLayout();
+
+	/**
+	 * Method sorting the pointers by pointer address ascending.
+	 */
+	protected void sort() {
+		pointers.sort((p1, p2) -> p1.pointsAt() - p2.pointsAt());
+	}
+
+	protected Pointer addPointer(int address, int size) {
+		Pointer pointer = new Pointer(this);
+		pointer.pointAt(address);
+		pointers.add(pointer);
+		pointerSize.put(pointer, size);
+		sort();
+		return pointer;
+	}
 }

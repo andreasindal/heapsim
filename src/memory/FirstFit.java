@@ -10,8 +10,6 @@ import java.util.LinkedList;
  * @since 1.0
  */
 public class FirstFit extends Memory {
-    private LinkedList<Pointer> pointers;
-	private HashMap<Pointer, Integer> pointerSize;
     private boolean compacting;
 
 	/**
@@ -51,15 +49,6 @@ public class FirstFit extends Memory {
 		return new Pointer(this);
 	}
 
-	private Pointer addPointer(int address, int size) {
-		Pointer pointer = new Pointer(this);
-		pointer.pointAt(address);
-        pointers.add(pointer);
-		pointerSize.put(pointer, size);
-        sort();
-		return pointer;
-	}
-
 	/**
 	 * Releases a number of data cells
 	 * 
@@ -70,18 +59,8 @@ public class FirstFit extends Memory {
         pointers.remove(p);
         pointerSize.remove(p);
         sort();
-        if (compacting)
-        compact();
+        if (compacting) compact();
 	}
-
-    /**
-     * Method sorting the pointers by pointer address ascending.
-     */
-    private void sort() {
-        pointers.sort((p1, p2) -> {
-            return p1.pointsAt() - p2.pointsAt();
-        });
-    }
 
     /**
 	 * Prints a simple model of the memory.
