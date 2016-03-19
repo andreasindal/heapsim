@@ -44,6 +44,8 @@ public class FirstFit extends Memory {
 
 		if ((cells.length  - address +1) > size) {
 			return addPointer(address, size);
+		} else {
+			System.out.println("Memoryallocation not possible, not enough space");
 		}
 
 		return new Pointer(this);

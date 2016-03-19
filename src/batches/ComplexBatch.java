@@ -22,7 +22,7 @@ public class ComplexBatch {
 	}
 
 	public void run() {
-		Memory m = new FirstFit(1000, true); // boolean for compacting(true) or not
+		Memory m = new FirstFit(1000, false); // boolean for compacting(true) or not
 		Pointer[] ps = new Pointer[20];
 
 		ps[0] = m.alloc(100);
